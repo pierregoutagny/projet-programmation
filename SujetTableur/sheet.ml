@@ -70,17 +70,25 @@ let invalidate_sheet () =
   in
   sheet_iter invalidate_cell
 
-
 (*    à faire : le cœur du programme *)    
 let rec eval_form fo = match fo with
-  | Cst n -> 27.19
-  | Cell (p,q) -> 27.19
-  | Op(o,fs) -> 27.19
+  | Cst n -> n
+  | Cell (p,q) -> eval_cell p q
+  | Op(o,fs) -> eval_op o fs
+
+and eval_op o fs = match o with
+  | S -> List.fold_left (fun x f -> x +. eval_form f) 0. fs 
+  | M -> List.fold_left (fun x f -> x *. eval_form f) 1. fs
+  | A -> (eval_op S fs) /. float_of_int (List.length fs)
 
 (* ici un "and", car eval_formula et eval_cell sont a priori 
    deux fonctions mutuellement récursives *)
 and eval_cell i j =
-  19.27
+  let c = read_cell (i, j) in
+  match c.value with 
+  | None -> let v = eval_form c.formula in update_cell_value (i, j) (Some v); v
+  | Some n -> n
+
 
 (* on recalcule le tableau, en deux étapes *)
 let recompute_sheet () =
