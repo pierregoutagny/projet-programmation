@@ -1,18 +1,19 @@
 %{
-(* --- préambule: ici du code Caml --- *)
+(* --- prï¿½ambule: ici du code Caml --- *)
 
 open Cell
 open Command
 
 %}
-/* énumération des lexèmes, ceux-ci sont décrits (par vous) dans lexer.mll */
+/* ï¿½numï¿½ration des lexï¿½mes, ceux-ci sont dï¿½crits (par vous) dans lexer.mll */
 
-%token <int> INT       /* le lexème INT a un attribut entier */
-%token <float> NBR       /* le lexème NBR a un attribut flottant */
-%token <string> CELLROW       /* le lexème CELLROW a un attribut, de type string */
+%token <int> INT       /* le lexï¿½me INT a un attribut entier */
+%token <float> NBR       /* le lexï¿½me NBR a un attribut flottant */
+%token <string> CELLROW       /* le lexï¿½me CELLROW a un attribut, de type string */
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
-%token EOF
+%token MAX
+%token EOF 
 
   /*
 %start singlecomm
@@ -46,6 +47,7 @@ clist:
    | SUM { S }
    | MULT { M }
    | AVERAGE { A }
+   | MAX { X }
   ;
   
   formula:

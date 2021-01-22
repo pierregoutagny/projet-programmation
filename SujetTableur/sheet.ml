@@ -80,6 +80,7 @@ and eval_op o fs = match o with
   | S -> List.fold_left (fun x f -> x +. eval_form f) 0. fs 
   | M -> List.fold_left (fun x f -> x *. eval_form f) 1. fs
   | A -> (eval_op S fs) /. float_of_int (List.length fs)
+  | X -> List.fold_left (fun x f -> max x (eval_form f)) neg_infinity fs 
 
 (* ici un "and", car eval_formula et eval_cell sont a priori 
    deux fonctions mutuellement récursives *)
