@@ -47,7 +47,7 @@ let _ = init_sheet ()
 let show_sheet () =
   let g i j =
     begin
-       (* aller à la ligne en fin de ligne *)
+      (* aller à la ligne en fin de ligne *)
       if j = 0 then print_newline() else ();
       let c = read_cell (i,j) in
       print_string (cell_val2string c);
@@ -65,7 +65,10 @@ let show_sheet () =
 (* on marque qu'on doit tout recalculer en remplissant le tableau de "None" *)
 (*    à faire : mettre tout le monde à None *)
 let invalidate_sheet () = 
-  print_string "invalidate_sheet : la fonction doit encore etre implementee\n"
+  let invalidate_cell i j =
+    update_cell_value (i, j) None
+  in
+  sheet_iter invalidate_cell
 
 
 (*    à faire : le cœur du programme *)    
