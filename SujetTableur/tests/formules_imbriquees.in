@@ -1,0 +1,6 @@
+D1 = 1
+D2 = 2
+D3 = 3
+D4 = 4
+C1 = SUM(D1; MULT(D2;D3;D4))
+Show C1
