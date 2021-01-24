@@ -69,7 +69,7 @@ let run_command c = match c with
     
     let f_list = cell_list_of_formula f in
     
-    if List.exists (dependency_from co) f_list then () else
+    if List.exists (dependency_from co) f_list then paf_debug () else
     begin
       eval_p_debug (fun () -> "Update cell " ^ cell_name2string cn ^ "\n");
       let l = cell_list_of_formula (read_cell co).formula in

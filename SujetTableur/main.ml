@@ -1,6 +1,10 @@
 open Cell
 open Sheet
 open Command
+open Debug
+
+(* Ajoute l'option -paf en ligne de commande, qui met la ref `paf` à `true` *)
+let _ = Arg.parse [("-paf", Set paf , "Affiche PAF s'il y a une boucle")] (fun s -> ()) "usage : ./main.native [-paf]"
 
 (*** début de la partie "incantatoire" ***)
 (* stdin désigne l'entrée standard (le clavier) *)
