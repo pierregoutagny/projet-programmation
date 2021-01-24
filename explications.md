@@ -39,3 +39,14 @@ Continuons l'exemple précédent :
 [|[|{contents = 0}; {contents = 3}|]; [|{contents = 3}; {contents = 3}|]|]
 ```
 
+# Choix du parcours de l'arbre des dépendances entre cellules
+Pour parcourir l'arbre des dépendances dans l'étape 2.2, on peut indifféremment choisir un parcours en largeur ou un parcours en profondeur.\
+La situation qui pourrait poser problème est de la forme :
+```
+      A
+     / \
+    C   B
+        |
+        C
+```
+Or après chaque calcul d'une cellule dont C dépend, on recalcule au moins une fois C (plus ou moins tôt selon le type de parcours). Donc le dernier calcul de C s'effectue après le calcul de chacune de ses dépendendances, ce qui assure que C a la bonne valeur.
