@@ -1,10 +1,10 @@
+SRC_FILES=$(wildcard *.ml *.mly *.mll)
 TESTS=$(addsuffix .out, $(basename $(wildcard tests/*.in)))
 EXEC=main.native
 
-
 all: $(EXEC)
 
-$(EXEC):
+$(EXEC): ${SRC_FILES}
 	ocamlbuild -yaccflag -v -lib unix $(EXEC) #on dit de fabriquer main.native
 
 byte: 
