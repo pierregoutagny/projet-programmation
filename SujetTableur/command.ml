@@ -18,6 +18,12 @@ let cell_list_of_formula f =
   in
   ajoute f []
 
+let dependency_from co used_cell = 
+  let rec parcours co' = 
+    Hashtbl.fold (fun co'' _ b -> if co'' = used_cell then true else b || parcours co'') (read_cell co').used_in false 
+  in
+  co = used_cell || parcours co 
+
 let remove_dependencies co = List.iter (fun co' -> remove_used_in_cell co' co)
 let add_dependencies co = List.iter (fun co' -> add_used_in_cell co' co)
 
@@ -60,17 +66,21 @@ let run_command c = match c with
     end
   | Upd(cn,f) ->
     let co = cellname_to_coord cn in
-    eval_p_debug (fun () -> "Update cell " ^ cell_name2string cn ^ "\n");
-
-    let l = cell_list_of_formula (read_cell co).formula in
-    remove_dependencies co l;
-
-    update_cell_formula co f;
-
-    let l = cell_list_of_formula f in
-    add_dependencies co l;
     
-    recompute_cell (fst co) (snd co)
+    let f_list = cell_list_of_formula f in
+    
+    if List.exists (dependency_from co) f_list then () else
+    begin
+      eval_p_debug (fun () -> "Update cell " ^ cell_name2string cn ^ "\n");
+      let l = cell_list_of_formula (read_cell co).formula in
+      remove_dependencies co l;
+
+      update_cell_formula co f;
+
+      add_dependencies co f_list;
+
+      recompute_cell (fst co) (snd co);
+    end
 
 (* exécuter une liste de commandes *)
 let run_script cs = List.iter run_command cs
