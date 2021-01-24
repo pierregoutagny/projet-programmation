@@ -1,5 +1,6 @@
 (* les nombres avec lesquels on calcule *)
 type number = float
+type coord = int*int
 let print_number = print_float
 
 (* deux coordonnées, p.ex. ("B",7) *)
@@ -27,7 +28,7 @@ type oper = S | M | A | X(* sum, multiply, average, max *)
 
 (* formules : une valeur, la même valeur qu'une autre cellule, une opération et
  * ses arguments *)
-type form = Cst of number | Cell of (int*int) | Op of oper * form list
+type form = Cst of number | Cell of coord | Op of oper * form list
 
 (* cellules *)
 (* un type enregistrement
@@ -35,7 +36,7 @@ type form = Cst of number | Cell of (int*int) | Op of oper * form list
  * pour info, on a  type 'a option = None | Some of 'a (ici, 'a c'est number) 
  * cell est un enregistrement avec deux champs, un champ formula de type form,
  * et un champ value contenant soit Some f (avec f un float), soit None *)
-type cell = { mutable formula : form; mutable value : number option; used_in : (int*int, bool) Hashtbl.t }
+type cell = { mutable formula : form; mutable value : number option; used_in : (coord, unit) Hashtbl.t }
 
 (* cellule par défait : pas de valeur, et la formule correspondante est la constante 0. *)
 let default_cell = { formula = Cst 0.; value = None; used_in = Hashtbl.create 0 }

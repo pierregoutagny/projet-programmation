@@ -10,10 +10,12 @@ let thesheet = Array.make_matrix (fst size) (snd size) default_cell
 
 let read_cell co = thesheet.(fst co).(snd co)
 
-let update_cell_formula co f = thesheet.(fst co).(snd co).formula <- f
-let update_cell_value co v = thesheet.(fst co).(snd co).value <- v
-let add_used_in_cell co1 co2 = Hashtbl.replace thesheet.(fst co1).(snd co2).used_in co2 true
-let iter_used_in f co = Hashtbl.iter f thesheet.(fst co).(snd co).used_in
+
+let update_cell_formula co f = (read_cell co).formula <- f
+let update_cell_value co v = (read_cell co).value <- v
+let add_used_in_cell co1 co2 = Hashtbl.replace (read_cell co1).used_in co2 ()
+let remove_used_in_cell co1 co2 = Hashtbl.remove (read_cell co1).used_in co2
+let iter_used_in f co = Hashtbl.iter f (read_cell co).used_in
 
 (* exécuter une fonction, f, sur tout le tableau *)
 let sheet_iter f =
@@ -22,7 +24,6 @@ let sheet_iter f =
       f i j
     done;
   done
-
 
 
 (* initialisation du tableau : questions un peu subtiles de partage,
@@ -64,11 +65,12 @@ let show_sheet () =
 (********** calculer les valeurs à partir des formules *************)
 
 (* on marque qu'on doit tout recalculer en remplissant le tableau de "None" *)
+(* mettre i j a None*)
+let invalidate_cell i j =
+  update_cell_value (i, j) None
+  
 (*    à faire : mettre tout le monde à None *)
 let invalidate_sheet () = 
-  let invalidate_cell i j =
-    update_cell_value (i, j) None
-  in
   sheet_iter invalidate_cell
 
 (*    à faire : le cœur du programme *)    
@@ -97,4 +99,8 @@ let recompute_sheet () =
   invalidate_sheet ();
   sheet_iter eval_cell
 
-
+(* on recalcule le tableau uniquement par dépendance *)
+let rec recompute_cell i j =
+  invalidate_cell i j;
+  let _ = eval_cell i j in
+  iter_used_in (fun co _ -> recompute_cell (fst co) (snd co)) (i, j)

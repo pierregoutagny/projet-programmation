@@ -8,7 +8,20 @@ open Sheet
    - l'affichage de toute la feuille *)
 type comm = Upd of cellname * form | Show of cellname | ShowAll
 
+(************ utilitaire ************)
 
+let cell_list_of_formula f = 
+  let rec ajoute f l = match f with
+  | Cst _ -> l
+  | Cell co -> co::l
+  | Op (_, fl) -> List.fold_right ajoute fl l
+  in
+  ajoute f []
+
+let remove_dependencies co = List.iter (fun co' -> remove_used_in_cell co' co)
+let add_dependencies co = List.iter (fun co' -> add_used_in_cell co' co)
+
+  
 (************ affichage **************)
 let show_comm c =
   match c with
@@ -48,8 +61,16 @@ let run_command c = match c with
   | Upd(cn,f) ->
     let co = cellname_to_coord cn in
     eval_p_debug (fun () -> "Update cell " ^ cell_name2string cn ^ "\n");
+
+    let l = cell_list_of_formula (read_cell co).formula in
+    remove_dependencies co l;
+
     update_cell_formula co f;
-    recompute_sheet()
+
+    let l = cell_list_of_formula f in
+    add_dependencies co l;
+    
+    recompute_cell (fst co) (snd co)
 
 (* exécuter une liste de commandes *)
 let run_script cs = List.iter run_command cs
