@@ -12,7 +12,8 @@ let read_cell co = thesheet.(fst co).(snd co)
 
 let update_cell_formula co f = thesheet.(fst co).(snd co).formula <- f
 let update_cell_value co v = thesheet.(fst co).(snd co).value <- v
-
+let add_used_in_cell co1 co2 = Hashtbl.replace thesheet.(fst co1).(snd co2).used_in co2 true
+let iter_used_in f co = Hashtbl.iter f thesheet.(fst co).(snd co).used_in
 
 (* exécuter une fonction, f, sur tout le tableau *)
 let sheet_iter f =
@@ -33,7 +34,7 @@ let sheet_iter f =
  * une piste *)
 let init_sheet () =
   let init_cell i j =
-    let c = { value = None; formula = Cst 0. } in
+    let c = { value = None; formula = Cst 0.; used_in = Hashtbl.create (fst size * snd size) } in
     thesheet.(i).(j) <- c
   in
   sheet_iter init_cell
@@ -95,3 +96,5 @@ and eval_cell i j =
 let recompute_sheet () =
   invalidate_sheet ();
   sheet_iter eval_cell
+
+
