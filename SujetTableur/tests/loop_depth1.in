@@ -1,4 +1,4 @@
 A1 = B1
-B1 = SUM(A1; 1)
 Show A1
+B1 = SUM(A1; 1)
 Show B1
