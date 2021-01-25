@@ -5,11 +5,11 @@ open Cell
 open Command
 
 %}
-/* �num�ration des lex�mes, ceux-ci sont d�crits (par vous) dans lexer.mll */
+/* énumération des lexèmes, ceux-ci sont décrits (par vous) dans lexer.mll */
 
-%token <int> INT       /* le lex�me INT a un attribut entier */
-%token <float> NBR       /* le lex�me NBR a un attribut flottant */
-%token <string> CELLROW       /* le lex�me CELLROW a un attribut, de type string */
+%token <int> INT       /* le lexème INT a un attribut entier */
+%token <float> NBR       /* le lexème NBR a un attribut flottant */
+%token <string> CELLROW       /* le lexème CELLROW a un attribut, de type string */
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
 %token MAX COLON
@@ -53,7 +53,6 @@ clist:
   formula:
    | NBR { Cst $1 } 
    | INT { Cst (float $1) } 
-   | cell COLON cell {(Cell.cellname_to_coor $1, Cell.cellname_to_coor $3)} 
    | cell { Cell (Cell.cellname_to_coord $1) }
    | operand LPAREN forlist RPAREN { Op($1,$3) }
   ;
@@ -61,6 +60,8 @@ clist:
   forlist:
    | formula { [$1] }
    | formula SEMICOL forlist { $1::$3 }
+   | cell COLON cell { [ CellRange (Cell.cellname_to_coord $1, Cell.cellname_to_coord $3) ] }
+   | cell COLON cell SEMICOL forlist { CellRange (Cell.cellname_to_coord $1, Cell.cellname_to_coord $3) :: $5 }
   ;
   
 

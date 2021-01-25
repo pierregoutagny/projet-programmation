@@ -1,0 +1,11 @@
+A1 = SUM(E1:D4)
+D2 = SUM(A2; B2:C2)
+E3 = SUM(B2:B4)
+A2=1
+B2=1
+C2=1
+C3=1
+B4=1
+B1=1
+E1=SUM(B1:B1)
+Show A1

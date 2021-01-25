@@ -14,8 +14,8 @@ let cell_list_of_formula f =
   let rec ajoute f l = match f with
   | Cst _ -> l
   | Cell co -> co::l
-  | CellRange(p1, q1, p2, q2) -> range_creation p1 q1 p2 q2 l (fun z -> z)
   | Op (_, fl) -> List.fold_right ajoute fl l
+  | CellRange _ -> failwith "Pas de CellRange ici"
   in
   ajoute f []
 
@@ -28,6 +28,33 @@ let dependency_from co used_cell =
 let remove_dependencies co = List.iter (fun co' -> remove_used_in_cell co' co)
 let add_dependencies co = List.iter (fun co' -> add_used_in_cell co' co)
 
+(* Engendre la liste des cellules entre (p1, q1) et (p2, q2). Ordre non spécifié *)
+let cell_list_of_range p1 q1 p2 q2 = 
+  let cell_list_of_ordered_range p1 q1 p2 q2 =
+    let rec add_cell p1 q1 x p2 q2 y l = 
+        match (p1 = x, q1 = y) with
+        | (true, true) -> Cell(x, y)::l
+        | (true, false) -> Cell(x, y)::(add_cell p1 q1 p2 p2 q2 (y-1) l)
+        | (false, _) -> Cell(x, y)::(add_cell p1 q1 (x-1) p2 q2 y l) 
+    in
+    add_cell p1 q1 p2 p2 q2 q2 []
+  in
+  match p1 <= p2, q1 <= q2 with
+  | (true, true) -> cell_list_of_ordered_range p1 q1 p2 q2
+  | (true, false) -> cell_list_of_ordered_range p1 q2 p2 q1
+  | (false, true) -> cell_list_of_ordered_range p2 q1 p1 q2
+  | (false, false) -> cell_list_of_ordered_range p2 q2 p1 q1
+
+(* Etend les range dans une formule. UB si f est une CellRange *)
+let expand_ranges f =
+  let rec expand_ranges_tolist f =
+    match f with
+    | Op (_, []) -> [f]
+    | Op (o, lf) -> [Op (o, List.flatten (List.map expand_ranges_tolist lf))]
+    | CellRange ((x1, y1), (x2, y2)) -> cell_list_of_range x1 y1 x2 y2
+    | _ -> [f]
+  in
+  List.hd (expand_ranges_tolist f)
   
 (************ affichage **************)
 let show_comm c =
@@ -55,7 +82,7 @@ let run_command c = match c with
       let co = cellname_to_coord cn in
       eval_p_debug (fun () ->
           "Showing cell "
-          ^ cell_name2string cn
+          ^ cell_name2string cn ^ "\n"
         );
       ps (cell_val2string (read_cell co)); (* <- ici ps, et pas p_debug, car on veut afficher au moins cela *)
       print_newline()
@@ -65,8 +92,10 @@ let run_command c = match c with
       eval_p_debug (fun () -> "Show All\n");
       show_sheet ()
     end
-  | Upd(cn,f) ->
+  | Upd(cn, f') ->
     let co = cellname_to_coord cn in
+
+    let f = expand_ranges f' in
     
     let f_list = cell_list_of_formula f in
     
