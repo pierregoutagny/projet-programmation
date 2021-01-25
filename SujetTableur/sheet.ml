@@ -35,7 +35,7 @@ let sheet_iter f =
  * une piste *)
 let init_sheet () =
   let init_cell i j =
-    let c = { value = None; formula = Cst 0.; used_in = Hashtbl.create (fst size * snd size) } in
+    let c = { value = None; formula = Cst (I 0); used_in = Hashtbl.create (fst size * snd size) } in
     thesheet.(i).(j) <- c
   in
   sheet_iter init_cell
@@ -74,6 +74,16 @@ let invalidate_sheet () =
   sheet_iter invalidate_cell
 
 (*    à faire : le cœur du programme *)
+let number_operation fun_float fun_int a b =
+    match a, b with
+    | I i, I j -> I (fun_int i j)
+    | I i, F j | F j, I i -> F (fun_float (float_of_int i) j)
+    | F i, F j -> F (fun_float i j)
+let add_numbers = number_operation ( +. ) ( + )
+let mult_numbers = number_operation ( *. ) ( * )
+let max_numbers = number_operation max max
+let div_numbers = number_operation ( /. ) ( / )
+
 let rec eval_form fo = match fo with
   | Cst n -> n
   | Cell (p,q) -> eval_cell p q
@@ -81,10 +91,10 @@ let rec eval_form fo = match fo with
   | CellRange _ -> failwith "On n'évalue jamais de CellRange"
 
 and eval_op o fs = match o with
-  | S -> List.fold_left (fun x f -> x +. eval_form f) 0. fs 
-  | M -> List.fold_left (fun x f -> x *. eval_form f) 1. fs
-  | A -> (eval_op S fs) /. float_of_int (List.length fs)
-  | X -> List.fold_left (fun x f -> max x (eval_form f)) neg_infinity fs 
+  | S -> List.fold_left (fun x f -> add_numbers x (eval_form f)) (I 0) fs 
+  | M -> List.fold_left (fun x f -> mult_numbers x (eval_form f)) (I 1) fs
+  | A -> div_numbers (eval_op S fs) (F (float_of_int (List.length fs)))
+  | X -> List.fold_left (fun x f -> max_numbers x (eval_form f)) (I min_int) fs 
 
 (* ici un "and", car eval_formula et eval_cell sont a priori 
    deux fonctions mutuellement récursives *)

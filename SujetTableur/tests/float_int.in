@@ -1,0 +1,39 @@
+A1 = SUM(1;1;1.)
+A2 = SUM(1;1;1)
+A3 = SUM(1.;1.;1)
+A4 = SUM(1.;1.;1.)
+
+B1 = MULT(1;1;1.)
+B2 = MULT(1;1;1)
+B3 = MULT(1.;1.;1)
+B4 = MULT(1.;1.;1.)
+
+C1 = AVERAGE(1;1;1.)
+C2 = AVERAGE(1;1;1)
+C3 = AVERAGE(1.;1.;1)
+C4 = AVERAGE(1.;1.;1.)
+
+D1 = MAX(1;1;1.)
+D2 = MAX(1;1;1)
+D3 = MAX(1.;1.;1)
+D4 = MAX(1.;1.;1.)
+
+Show A1 
+Show A2 
+Show A3 
+Show A4 
+
+Show B1 
+Show B2 
+Show B3 
+Show B4 
+
+Show C1 
+Show C2 
+Show C3 
+Show C4 
+
+Show D1 
+Show D2 
+Show D3 
+Show D4 

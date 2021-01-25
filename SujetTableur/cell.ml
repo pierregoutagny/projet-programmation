@@ -1,7 +1,13 @@
 (* les nombres avec lesquels on calcule *)
-type number = float
+type number = F of float | I of int
 type coord = int*int
-let print_number = print_float
+let string_of_number = function
+    | F f -> string_of_float f
+    | I i -> string_of_int i
+
+let print_number = function
+    | F f -> print_float f
+    | I i -> print_int i
 
 (* deux coordonnées, p.ex. ("B",7) *)
 type cellname = string*int
@@ -38,8 +44,8 @@ type form = Cst of number | Cell of coord | CellRange of coord * coord | Op of o
  * et un champ value contenant soit Some f (avec f un float), soit None *)
 type cell = { mutable formula : form; mutable value : number option; used_in : (coord, unit) Hashtbl.t }
 
-(* cellule par défait : pas de valeur, et la formule correspondante est la constante 0. *)
-let default_cell = { formula = Cst 0.; value = None; used_in = Hashtbl.create 0 }
+(* cellule par défait : pas de valeur, et la formule correspondante est la constante I 0 *)
+let default_cell = { formula = Cst (I 0); value = None; used_in = Hashtbl.create 0 }
 
 
 
@@ -48,7 +54,7 @@ let cell_name2string cn = (fst cn)^(string_of_int (snd cn))
 
 let cell_val2string c = match c.value with
   | None -> "_"
-  | Some n -> string_of_float n
+  | Some n -> string_of_number n
 
 let oper2string = function
   | S -> "SUM"
@@ -80,7 +86,7 @@ let rec show_list f = function
 let rec form2string = function
   | Cell c -> cell_name2string (coord_to_cellname c)
   | CellRange(co1,co2) -> form2string (Cell co1) ^ ":" ^ form2string (Cell co2)
-  | Cst n -> string_of_float n
+  | Cst n -> string_of_number n
   | Op(o,fl) ->
     begin
       (oper2string o) ^ "(" ^ list2string form2string fl ^ ")"

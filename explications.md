@@ -1,4 +1,5 @@
 # A propos du commentaire avant `init_sheet` :
+
 La [doc](https://caml.inria.fr/pub/docs/manual-ocaml/libref/Array.html#VALmake_matrix) précise
 
 > All the elements of this new matrix are initially physically equal to `e`
@@ -40,6 +41,7 @@ Continuons l'exemple précédent :
 ```
 
 # Choix du parcours de l'arbre des dépendances entre cellules
+
 Pour parcourir l'arbre des dépendances dans l'étape 2.2, on peut indifféremment choisir un parcours en largeur ou un parcours en profondeur.\
 La situation qui pourrait poser problème est de la forme :
 ```
@@ -50,3 +52,8 @@ La situation qui pourrait poser problème est de la forme :
         C
 ```
 Or après chaque calcul d'une cellule dont C dépend, on recalcule au moins une fois C (plus ou moins tôt selon le type de parcours). Donc le dernier calcul de C s'effectue après le calcul de chacune de ses dépendendances, ce qui assure que C a la bonne valeur.
+
+# Type `number`
+
+Somme de `float` et `int`, avec coercion de type vers `float` si nécessaire (au moins un `float` dans le calcul)\
+La moyenne fait toujours intervenir une division, donc `float`
