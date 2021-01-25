@@ -14,6 +14,7 @@ let cell_list_of_formula f =
   let rec ajoute f l = match f with
   | Cst _ -> l
   | Cell co -> co::l
+  | CellRange(p1, q1, p2, q2) -> range_creation p1 q1 p2 q2 l (fun z -> z)
   | Op (_, fl) -> List.fold_right ajoute fl l
   in
   ajoute f []

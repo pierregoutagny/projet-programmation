@@ -60,8 +60,8 @@ let show_sheet () =
   print_newline()
 
 
-
-
+  
+  
 (********** calculer les valeurs à partir des formules *************)
 
 (* on marque qu'on doit tout recalculer en remplissant le tableau de "None" *)
@@ -69,22 +69,43 @@ let show_sheet () =
 let invalidate_cell i j =
   update_cell_value (i, j) None
   
-(*    à faire : mettre tout le monde à None *)
-let invalidate_sheet () = 
-  sheet_iter invalidate_cell
+  (*    à faire : mettre tout le monde à None *)
+  let invalidate_sheet () = 
+    sheet_iter invalidate_cell
+
+let rec range_cell p1 q1 x p2 q2 y l= match (x = p1), (y = q1) with
+  |(true, true) -> Cell(x, y)::l
+  |(false, true) -> Cell(x, y)::(range_cell p1 q1 (x-1) p2 q2 q2 l)
+  |(_, false) -> Cell(x, y)::(range_cell p1 q1 x p2 q2 (y-1) l)
+
+let range_cell_creation p1 q1 p2 q2 l funct = 
+  match p1 <= p2, q1 <= q2 with
+  |(true, true) -> funct (range_cell p1 q1 p2 p2 q2 q2 [])
+  |(true, false) -> funct (range_cell p1 q2 p2 p2 q1 q1 [])
+  |(false, true) -> funct (range_cell p2 q1 p1 p1 q2 q2 [])
+  |(false, false) -> funct (range_cell p2 q2 p1 p1 q1 q1 [])
 
 (*    à faire : le cœur du programme *)    
 let rec eval_form fo = match fo with
-  | Cst n -> n
-  | Cell (p,q) -> eval_cell p q
-  | Op(o,fs) -> eval_op o fs
+| Cst n -> n
+| Cell (p,q) -> eval_cell p q 
+| Op(o,fs) -> eval_op o fs
+| CellRange(co1, co2) -> failwith "on ne doit jamais avoir a évaluer la forme d'un cell de range"
+
+(* Il faudra faire la moyenne qui va être horrible .... *)
 
 and eval_op o fs = match o with
-  | S -> List.fold_left (fun x f -> x +. eval_form f) 0. fs 
-  | M -> List.fold_left (fun x f -> x *. eval_form f) 1. fs
-  | A -> (eval_op S fs) /. float_of_int (List.length fs)
-  | X -> List.fold_left (fun x f -> max x (eval_form f)) neg_infinity fs 
+| S -> List.fold_left (eval_range S (fun x f -> x +. eval_form f)) 0. fs 
+| M -> List.fold_left (eval_range M (fun x f -> x *. eval_form f)) 1. fs
+| A -> (eval_op S fs) /. float_of_int (List.length fs)
+| X -> List.fold_left (eval_range X (fun x f -> max x (eval_form f))) neg_infinity fs 
 
+and eval_range fonct o x f = match f with
+| Cst _ -> fonct x f
+| Cell _ -> fonct x f
+| Op(_, _) -> fonct x f
+| CellRange((p1, q1), (p2, q2)) -> (range_cell_creation p1 q1 p2 q2 [] eval_op) o x f
+      
 (* ici un "and", car eval_formula et eval_cell sont a priori 
    deux fonctions mutuellement récursives *)
 and eval_cell i j =

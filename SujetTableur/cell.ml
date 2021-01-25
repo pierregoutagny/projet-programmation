@@ -28,7 +28,7 @@ type oper = S | M | A | X(* sum, multiply, average, max *)
 
 (* formules : une valeur, la même valeur qu'une autre cellule, une opération et
  * ses arguments *)
-type form = Cst of number | Cell of coord | Op of oper * form list
+type form = Cst of number | Cell of coord | CellRange of coord * coord | Op of oper * form list 
 
 (* cellules *)
 (* un type enregistrement
@@ -79,6 +79,7 @@ let rec show_list f = function
 (* convertir une formule en une chaîne de caractères *)
 let rec form2string = function
   | Cell c -> cell_name2string (coord_to_cellname c)
+  | CellRange(co1,co2) -> String.concat (form2string (Cell co1)) [" "; form2string (Cell co2)]
   | Cst n -> string_of_float n
   | Op(o,fl) ->
     begin

@@ -12,7 +12,7 @@ open Command
 %token <string> CELLROW       /* le lex�me CELLROW a un attribut, de type string */
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
-%token MAX
+%token MAX COLON
 %token EOF 
 
   /*
@@ -53,6 +53,7 @@ clist:
   formula:
    | NBR { Cst $1 } 
    | INT { Cst (float $1) } 
+   | cell COLON cell {(Cell.cellname_to_coor $1, Cell.cellname_to_coor $3)} 
    | cell { Cell (Cell.cellname_to_coord $1) }
    | operand LPAREN forlist RPAREN { Op($1,$3) }
   ;

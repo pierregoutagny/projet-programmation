@@ -15,6 +15,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '='             { EQUAL }
   | ';'             { SEMICOL }
   | '.'             { DOT }
+  | ':'             { COLON }  (* ligne reservé pour les range *)
   | "Show" { SHOW }
   | "ShowAll" { SHOWALL }
   | "SUM" { SUM }
