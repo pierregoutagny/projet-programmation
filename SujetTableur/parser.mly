@@ -9,7 +9,7 @@ open Command
 
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token <float> NBR       /* le lexème NBR a un attribut flottant */
-%token <string> CELLROW       /* le lexème CELLROW a un attribut, de type string */
+%token <string * int> CELL       /* le lexème CELLROW a un attribut, de type string */
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
 %token MAX COLON
@@ -40,7 +40,7 @@ clist:
   ;
 
   cell:
-   | CELLROW INT { ($1,$2) }
+   | CELL { $1 }
   ;
 
   operand:

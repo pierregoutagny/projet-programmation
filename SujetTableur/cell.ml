@@ -12,15 +12,28 @@ let print_number = function
 (* deux coordonnées, p.ex. ("B",7) *)
 type cellname = string*int
 
+let rowname_to_row rn =
+  let fin = String.length rn in
+  let rec convert debut n =
+    if debut = fin then n
+    else convert (debut+1) (26*n + (int_of_char rn.[debut])- 64)
+  in
+  convert 0 0
+
+let row_to_rowname r = 
+  let rec convert r s =
+    let d = r / 26 in
+    let m = r mod 26 in
+    if d=0 then String.make 1 (char_of_int (r+65)) ^ s else convert (d-1) (String.make 1 (char_of_int (m+65)) ^ s)
+  in
+  convert r ""
 
 (* les deux fonctions ci-dessous sont a reprendre, un jour ou l'autre :
  * elles ne marchent que pour des noms de colonnes ne comportant qu'un
  * caractère *)
 let cellname_to_coord cn =
-  if String.length (fst cn) > 1 then
-    failwith "cellname_to_coord : désolé, je ne sais pas faire"
-  else let column = int_of_char (fst cn).[0] - 65 in
-    (snd cn -1, column)
+  let column = rowname_to_row (fst cn) in
+    (snd cn -1, column - 1)
 let coord_to_cellname co =
   let column_nbr = snd co in
   if column_nbr > 25 then
