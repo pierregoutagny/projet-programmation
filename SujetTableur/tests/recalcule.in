@@ -1,0 +1,4 @@
+A1 = SUM(B1;5.)
+Show A1
+B1=2
+Show A1

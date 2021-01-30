@@ -1,0 +1,3 @@
+F4=A1
+A1=MAX(B2:H12)
+Show A1

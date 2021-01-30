@@ -1,0 +1,7 @@
+A1=B1
+A2 = SUM(A1; MAX(A1; 5))
+B1=3
+Show A2
+B1 = MULT(A2:A2)
+Show A1
+Show A2

@@ -1,0 +1,4 @@
+A1 = SUM(B2:H12)
+F4=A1
+F5=1
+Show A1
