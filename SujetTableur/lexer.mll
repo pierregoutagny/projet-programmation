@@ -22,7 +22,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "MULT" { MULT }
   | "AVERAGE" { AVERAGE }
   | "MAX" { MAX }
+  | "SwitchTo" { SWITCHTO }
   | '-'?['0'-'9']+'.'['0'-'9']* as s { NBR (float_of_string s) } 
   | '-'?['0'-'9']+ as s { INT (int_of_string s) } 
   (* Un lexème unique pour les noms de cellules *)
   | (['A'-'Z']+ as s) (['0'-'9']+ as i) { CELL (s, (int_of_string i)) }
+  | 's'(['0'-'9']+ as s) { SHEET (int_of_string s) }

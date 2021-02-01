@@ -6,7 +6,7 @@ open Sheet
    - La modification d'une cellule avec une nouvelle formule,
    - l'affichage d'une cellule, 
    - l'affichage de toute la feuille *)
-type comm = Upd of cellname * form | Show of cellname | ShowAll
+type comm = Upd of cellname * form | Show of cellname | ShowAll | SwitchTo of int 
 
 (************ utilitaire ************)
 
@@ -72,6 +72,7 @@ let show_comm c =
       ps ")"
     end
   | ShowAll -> ps "ShowAll"
+  | SwitchTo s -> ps "s"; ps (string_of_int s)
 
 (************ faire tourner les commandes **************)
 
@@ -92,6 +93,7 @@ let run_command c = match c with
       eval_p_debug (fun () -> "Show All\n");
       show_sheet ()
     end
+  | SwitchTo s -> current_sheet := s
   | Upd(cn, f') ->
     let co = cellname_to_coord cn in
 

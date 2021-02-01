@@ -8,6 +8,8 @@ let size = (20,10) (* lignes, colonnes *)
 (* default_cell est défini dans cell.ml (module Cell) *)
 let thesheet = Array.make_matrix (fst size) (snd size) default_cell
 
+let current_sheet = ref 0
+
 let read_cell co = thesheet.(fst co).(snd co)
 
 

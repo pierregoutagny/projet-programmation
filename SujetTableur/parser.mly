@@ -10,9 +10,10 @@ open Command
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token <float> NBR       /* le lexème NBR a un attribut flottant */
 %token <string * int> CELL       /* le lexème CELLROW a un attribut, de type string */
+%token <int> SHEET
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
-%token MAX COLON
+%token MAX COLON SWITCHTO
 %token EOF 
 
   /*
@@ -37,7 +38,12 @@ clist:
    | cell EQUAL formula { Upd($1,$3) }
    | SHOW cell { Show($2) }
    | SHOWALL { ShowAll }
+   | SWITCHTO sheet { SwitchTo $2 }
   ;
+
+  sheet:
+    | SHEET { $1 }
+   ;
 
   cell:
    | CELL { $1 }
