@@ -9,8 +9,8 @@ open Command
 
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token <float> NBR       /* le lexème NBR a un attribut flottant */
-%token <string * int> CELL       /* le lexème CELLROW a un attribut, de type string */
-%token <int> SHEET
+%token <string * int> CELL       /* le lexème CELL a un attribut, de type string * int */
+%token <int> SHEET          /* le lexème SHEET a un attribut, de type int */
 %token LPAREN RPAREN EQUAL SEMICOL DOT
 %token SUM MULT AVERAGE SHOW SHOWALL
 %token MAX COLON SWITCHTO
