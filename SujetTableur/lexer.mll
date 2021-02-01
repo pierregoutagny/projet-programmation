@@ -27,4 +27,4 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '-'?['0'-'9']+ as s { INT (int_of_string s) } 
   (* Un lexème unique pour les noms de cellules *)
   | (['A'-'Z']+ as s) (['0'-'9']+ as i) { CELL (s, (int_of_string i)) }
-  | 's'(['0'-'9']+ as s) { SHEET (int_of_string s) }
+  | 's'(['0'-'9']+ as s) { SHEET ((int_of_string s) - 1) }
