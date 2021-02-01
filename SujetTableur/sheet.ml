@@ -2,13 +2,18 @@
 open Cell
 
 let size = (20,10) (* lignes, colonnes *)
+let number_of_sheets = 4 (* Nombre de feuilles du tableur *)
 
 (* le tableau que l'on manipule dans le programme ; *)
 (* si nécessaire, tapez "fst" et "snd" dans un interprete Caml pour connaître leur type *) 
 (* default_cell est défini dans cell.ml (module Cell) *)
-let thesheet = Array.make_matrix (fst size) (snd size) default_cell
+let new_sheet () = Array.make_matrix (fst size) (snd size) default_cell
 
-let read_cell co = thesheet.(fst co).(snd co)
+let thesheet = Array.make number_of_sheets (new_sheet ())
+
+let current_sheet = ref 0
+
+let read_cell co = thesheet.(!current_sheet).(fst co).(snd co)
 
 
 let update_cell_formula co f = (read_cell co).formula <- f
@@ -34,11 +39,17 @@ let sheet_iter f =
  * regarder ce que ça donne sur le tableau : cela devrait vous donner
  * une piste *)
 let init_sheet () =
-  let init_cell i j =
-    let c = { value = None; formula = Cst (I 0); used_in = Hashtbl.create (fst size * snd size) } in
-    thesheet.(i).(j) <- c
-  in
-  sheet_iter init_cell
+  for k = 0 to number_of_sheets - 1 do
+    let a_sheet = (new_sheet ()) in
+    let init_cell i j =
+      let c = { value = None; formula = Cst (I 0); used_in = Hashtbl.create (fst size * snd size) } in
+      a_sheet.(i).(j) <- c
+    in
+    sheet_iter init_cell;
+    thesheet.(k) <- a_sheet
+    done
+
+    
 
 (* on y va, on initialise *)
 let _ = init_sheet ()
